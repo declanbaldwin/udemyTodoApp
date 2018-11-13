@@ -48,7 +48,6 @@ UserSchema.methods.toJSON = function() {
 //instance methods - no arrow function because we need a 'this' key word
 UserSchema.methods.generateAuthToken = function() {
     var user = this;
-    console.log('generateAuthToken');
     var access = 'auth';
     var token = jwt.sign({_id: user._id.toHexString(), access}, 'abc123').toString();
 
@@ -57,6 +56,11 @@ UserSchema.methods.generateAuthToken = function() {
     return user.save().then(() => {
         return token;
     });
+};
+
+UserSchema.methods.removeToken = function() {
+    var user = this;
+
 };
 
 //model methods
@@ -75,6 +79,25 @@ UserSchema.statics.findByToken = function(token) {
         '_id': decoded._id,
         'tokens.token': token,
         'tokens.access': 'auth'
+    });
+};
+
+UserSchema.statics.findByCredentials = function(email, password) {
+    var User = this;
+    return User.findOne({email}).then((user) => {
+        if(!user) {
+            return Promise.reject();
+        }        
+
+        return new Promise((resolve, reject) => {
+            bcrypt.compare(password, user.password, (err, res) => {
+                if(res) {
+                    resolve(user);
+                } else {
+                    reject();
+                }
+            });
+        });
     });
 };
 
