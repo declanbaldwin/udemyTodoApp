@@ -289,7 +289,7 @@ describe('POST /users', () => {
 
     it('should not create user if email in use', (done) => {
       var email = users[0].email;
-      var password = 'abc1234';
+      var password = 'abc1234asdasd';
       request(app)
       .post('/users')
       .send({email, password})

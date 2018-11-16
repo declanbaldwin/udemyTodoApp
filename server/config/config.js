@@ -3,7 +3,6 @@ console.log('env *****', env);
 
 if(env === 'development' || env === 'test') {
   var config = require('./config.json');
-  console.log(config);
   var envConfig = config[env];
 
   Object.keys(envConfig).forEach((key) => {
